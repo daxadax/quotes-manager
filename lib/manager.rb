@@ -10,7 +10,12 @@ module Manager
     quote = call_use_case("Quotes", :CreateQuote, args)
 
     if quote.uid
-      p "time to call the user!"
+      input = {
+        :uid => args[:user_uid],
+        :quote_uid => quote.uid
+      }
+
+      call_use_case("Users", :PublishQuote, input)
     end
     quote
   end
