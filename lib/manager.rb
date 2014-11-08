@@ -4,19 +4,15 @@ require 'quotes'
 
 module Manager
 
-  DOMAINS = %w[Users Quotes]
+  DOMAINS = [
+    Users,
+    Quotes
+  ]
 
   def self.create_quote(args)
-    quote = call_use_case("Quotes", :CreateQuote, args)
+    quote = call_use_case(Quotes, :CreateQuote, args)
 
-    if quote.uid
-      input = {
-        :uid => args[:user_uid],
-        :quote_uid => quote.uid
-      }
-
-      call_use_case("Users", :PublishQuote, input)
-    end
+    publish_quote_for_user(args[:user_uid], quote.uid) unless quote.error
     quote
   end
 
@@ -35,11 +31,21 @@ module Manager
     use_case.call
   end
 
+  def self.publish_quote_for_user(user_uid, quote_uid)
+    input = {
+      :uid => user_uid,
+      :quote_uid => quote_uid
+    }
+
+    call_use_case(Users, :PublishQuote, input)
+  end
+
   def self.domain_for(use_case)
     DOMAINS.each do |domain|
       use_cases = eval "#{domain}::UseCases.constants"
       return domain if use_cases.include?(use_case)
     end
+    raise ArgumentError, "You tried to call '#{use_case}', but it doesn't exist\n"
   end
 
 end
