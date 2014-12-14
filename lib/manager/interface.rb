@@ -1,6 +1,11 @@
 module Manager
   module Interface
 
+    DOMAINS = %i[
+      Users
+      Quotes
+    ]
+
     def self.create_quote(args)
       result = call_use_case Quotes, :CreateQuote, args
 
