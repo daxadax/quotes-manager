@@ -14,4 +14,8 @@ module Manager
     Persistence::Gateways::PublicationsGatewayBackend.new
   end
 
+  Users::ServiceFactory.register :users_backend do
+    Persistence::Gateways::UsersGatewayBackend.new
+  end
+
 end
