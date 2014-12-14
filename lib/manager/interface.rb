@@ -7,38 +7,38 @@ module Manager
     ]
 
     def self.create_quote(args)
-      result = call_use_case Quotes, :CreateQuote, args
+      result = call_use_case :Quotes, :CreateQuote, args
 
       update_added(args[:user_uid], :quote, result.uid) unless result.error
       result
     end
 
     def self.delete_quote(args)
-      result = call_use_case Quotes, :DeleteQuote, args
+      result = call_use_case :Quotes, :DeleteQuote, args
 
       update_added(args[:user_uid], :quote, args[:uid]) unless result.error
       result
     end
 
     def self.create_publication(args)
-      result = call_use_case Quotes, :CreatePublication, args
+      result = call_use_case :Quotes, :CreatePublication, args
 
       update_added(args[:user_uid], :publication, result.uid) unless result.error
       result
     end
 
     def self.delete_publication(args)
-      result = call_use_case Quotes, :DeletePublication, args
+      result = call_use_case :Quotes, :DeletePublication, args
 
       update_added(args[:user_uid], :publication, args[:uid]) unless result.error
       result
     end
 
     def self.authenticate_user(args)
-      result = call_use_case Users, :AuthenticateUser, args
+      result = call_use_case :Users, :AuthenticateUser, args
 
       unless result.error
-        call_use_case Users, :UpdateUser,
+        call_use_case :Users, :UpdateUser,
           :uid => result.uid,
           :auth_key => args[:auth_key],
           :updates => {
@@ -70,7 +70,7 @@ module Manager
       args[:quote_uid] = object_uid if type == :quote
       args[:publication_uid] = object_uid if type == :publication
 
-      call_use_case Users, :UpdateAdded, args
+      call_use_case :Users, :UpdateAdded, args
     end
 
     def self.domain_for(use_case)
